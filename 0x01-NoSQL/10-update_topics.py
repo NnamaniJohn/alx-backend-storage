@@ -12,5 +12,4 @@ def update_topics(mongo_collection, name, topics):
     :param topics:
     :return:
     """
-    return mongo_collection.update_one({"name": name},
-                        {"$set": {"topics": topics}}, upsert=True)
+    return mongo_collection.update_one({"name": name}, {"$set": {"topics": topics}})
