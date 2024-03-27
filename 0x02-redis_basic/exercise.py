@@ -7,6 +7,24 @@ import uuid
 import typing
 
 
+def count_calls(method: typing.Callable) -> typing.Callable:
+    """
+    count calls
+    :param method:
+    :return:
+    """
+    def wrapper(cls, data: str | bytes | int | float):
+        """
+        wrapper
+        :param cls:
+        :param data:
+        :return:
+        """
+        cls._redis.incr(wrapper.__qualname__)
+        return method(cls, data)
+    return wrapper
+
+
 class Cache:
     """
     Cache class
@@ -20,6 +38,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: str | bytes | int | float) -> str:
         """
         store
@@ -30,7 +49,7 @@ class Cache:
         self._redis.set(key, data)
         return key
 
-    def get(self, key: str, fn: typing.Callable) -> str | bytes | int | float:
+    def get(self, key: str, fn: typing.Callable = None) -> str | bytes | int | float:
         """
         get
         :param key:
